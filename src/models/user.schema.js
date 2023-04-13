@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import AuthRoles from "../utils/authRoles";
+import bcrypt from "bcryptjs"
 
 const userSchema = new mongoose.Schema({
     name: {
@@ -26,5 +27,23 @@ const userSchema = new mongoose.Schema({
     forgotPasswordExpiry: Date
 
 }, {timestamps: true})
+
+//Encrypting the password before saving using bcryptjs and HOOKS in mongoose:
+userSchema.pre('save', async function(next) {
+    if (this.isModified("password")) {
+        return next()
+    }
+    this.password = await bcrypt.hash(this.password, 10)
+    next()
+})
+
+//As we have encrypted the password that would never match the given password
+//For them to match we need a custom method
+userSchema.methods = {
+    //compare password
+    comparePassword: async function(enteredPassword) {
+        return await bcrypt.compare(enteredPassword, this.password)
+    } 
+}
 
 export default mongoose.model("User", userSchema)
