@@ -4,6 +4,12 @@ import User from "../models/user.schema.js"
 
 //signup a new user
 
+//securing cookie from user(user cannot write/edit) {httpOnly: true}
+export const cookieOptions = {
+    expires: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
+    httpOnly: true
+}
+
 export const signUp = asyncHandler(async(req, res) => {
     //get data from user
     const {name, email, password} = req.body
@@ -32,6 +38,9 @@ export const signUp = asyncHandler(async(req, res) => {
     const token = user.getJWTtoken()
     //safety
     user.password = undefined
+
+    //store this token in user's cookie--needs cookieParser in app.js
+    res.cookie("token", token, cookieOptions)
 
     //send back a response to the user
     res.status(200).json({
