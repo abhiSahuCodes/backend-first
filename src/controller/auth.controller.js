@@ -10,6 +10,13 @@ export const cookieOptions = {
     httpOnly: true
 }
 
+/******************************************************
+ * @SIGNUP
+ * @route http://localhost:5000/api/auth/signup
+ * @description User signUp Controller for creating new user
+ * @returns User Object
+ ******************************************************/
+
 export const signUp = asyncHandler(async(req, res) => {
     //get data from user
     const {name, email, password} = req.body
@@ -23,7 +30,8 @@ export const signUp = asyncHandler(async(req, res) => {
 
     //Lets add this data to the database
     //Finding if the user exists
-    const existingUser = await User.findOne({email: email})
+    const existingUser = await User.findOne({email: email}) 
+    //we can also write ({email}) as email is same as email name given
 
     if (existingUser) {
         throw new CustomError("User already exists", 400)
@@ -49,4 +57,54 @@ export const signUp = asyncHandler(async(req, res) => {
         user
     })
 
+})
+
+//User login
+
+export const login = asyncHandler(async(req, res) => {
+    const {email, password} = req.body
+
+    //Validation
+    if (!email || !password) {
+        throw new CustomError("Please fill all the details", 400)
+    }
+    
+    const user = User.findOne({email}).select("+password")
+    //If email and password doesn't match
+    if (!user) {
+        throw new CustomError("Invalid credentials", 400)
+    }
+
+    const isPasswordMatched = await user.comparePassword(password)
+
+    if (isPasswordMatched) {
+        const token = user.getJWTtoken()
+        //as the user is holding the password, lets secure this
+        user.password = undefined
+        //store this token in user's cookie
+        res.cookie("token", token, cookieOptions)
+        //if user is inside a mobile app or for a mobile developer
+        //send back a response to the user
+        res.status(200).json({
+            success: true,
+            token, 
+            user //we can send user.email if only email is to be sent
+        })
+    }
+    
+    throw new CustomError("Password is incorrect", 400)
+})
+
+//User logout
+
+export const logout = asyncHandler(async(req, res) => {
+    res.cookie("token", null, {
+        expires: new Date(Date.now()),
+        httpOnly: true
+    })
+    //After logout send a message
+    res.status(200).json({
+        success: true,
+        message: "Logged Out"
+    })
 })
