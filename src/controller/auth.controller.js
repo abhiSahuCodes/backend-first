@@ -17,7 +17,7 @@ export const cookieOptions = {
  * @returns User Object
  ******************************************************/
 
-export const signUp = asyncHandler(async(req, res) => {
+export const signUp = asyncHandler(async (req, res) => {
     //get data from user
     const {name, email, password} = req.body
 
@@ -61,7 +61,7 @@ export const signUp = asyncHandler(async(req, res) => {
 
 //User login
 
-export const login = asyncHandler(async(req, res) => {
+export const login = asyncHandler(async (req, res) => {
     const {email, password} = req.body
 
     //Validation
@@ -97,7 +97,7 @@ export const login = asyncHandler(async(req, res) => {
 
 //User logout
 
-export const logout = asyncHandler(async(req, res) => {
+export const logout = asyncHandler(async (req, res) => {
     res.cookie("token", null, {
         expires: new Date(Date.now()),
         httpOnly: true
@@ -106,5 +106,20 @@ export const logout = asyncHandler(async(req, res) => {
     res.status(200).json({
         success: true,
         message: "Logged Out"
+    })
+})
+
+//After the middleware is established
+
+export const getProfile = asyncHandler(async (req, res) => {
+    const {user} = req; //or we can write const user = req.user
+
+    if (!user) {
+        throw new CustomError("User not found", 401)
+    }
+
+    res.status(200).json({
+        success: true,
+        user
     })
 })
