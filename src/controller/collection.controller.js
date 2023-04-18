@@ -107,3 +107,5 @@ export const getAllCollection = asyncHandler(async (req, res) => {
         collections
     })
 })
+
+//After this aws-sdk is installed
