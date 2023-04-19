@@ -18,3 +18,5 @@ export const s3FileDelete = async ({bucketName, key}) => {
     })
     .promise()
 }
+
+//Formidable is installed after this for parsing form data
