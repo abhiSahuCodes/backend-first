@@ -2,6 +2,14 @@ import  Collection  from "../models/collection.schema";
 import asyncHandler from "../service/asyncHandler.js";
 import CustomError from "../utils/CustomError.js";
 
+//create collection
+
+/**********************************************************
+ * @CREATE_COLLECTION
+ * @route https://localhost:5000/api/collection/
+ * @description Controller used for creating a new collection
+ * @description Only admin can create the collection
+ *********************************************************/
 
 export const createCollection = asyncHandler(async (req, res) => {
     //User needs to give a name to create the collection
@@ -25,6 +33,13 @@ export const createCollection = asyncHandler(async (req, res) => {
 })
 
 //Updating the collection
+
+  /**
+   * @UPDATE_COLLECTION
+   * @route http://localhost:5000/api/collection/:collectionId
+   * @description Controller for updating the collection details
+   * @description Only admin can update the collection
+   */
 
 export const updateCollection = asyncHandler(async (req, res) => {
 
@@ -63,6 +78,14 @@ export const updateCollection = asyncHandler(async (req, res) => {
 
 //Deleting the collection
 
+  /**
+   * @DELETE_COLLECTION
+   * @route http://localhost:5000/api/collection/:collectionId
+   * @description Controller for deleting the collection
+   * @description Only admin can delete the collection
+   */
+
+
 export const deleteCollection = asyncHandler(async (req, res) => {
 
     //Here we need the id for that particular collection to delete
@@ -91,6 +114,14 @@ export const deleteCollection = asyncHandler(async (req, res) => {
 
 
 //Getting all the collections
+
+  /**
+   * @GET_ALL_COLLECTION
+   * @route http://localhost:5000/api/collection/
+   * @description Controller for getting all collection list
+   * @description Only admin can get collection list
+   * @returns Collection Object with available collection in DB
+   */
 
 export const getAllCollection = asyncHandler(async (req, res) => {
 
