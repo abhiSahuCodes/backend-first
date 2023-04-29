@@ -1,7 +1,7 @@
-import {Router} from "express";
-import { getProfile, login, logout, signUp } from "../controller/auth.controller.js";
-import { authorize, isLoggedIn } from "../middleware/auth.middleware.js";
-import AuthRoles from "../utils/authRoles";
+import { Router } from "express";
+import { getProfile, login, logout, signUp, forgotPassword, resetPassword } from "../controller/auth.controller.js";
+import { isLoggedIn } from "../middleware/auth.middleware.js";
+
 
 
 const router = Router();
@@ -11,6 +11,12 @@ const router = Router();
 router.post("/signUp", signUp)
 router.post("/login", login)
 router.get("/logout", logout)
+
+//For forget password
+router.post("/password/forgot/", forgotPassword)
+
+//For reset password
+router.post("/password/reset/:token", resetPassword)
 
 //If somebody hits /profile, then it shouldn't provide profile instantly, rather
 //isLoggedIn from middleware should verify it first
